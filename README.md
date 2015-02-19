@@ -1,5 +1,5 @@
 # reactive-table
-## Reactive table configruration
+## Reactive table configuration
 
 ### Installation
 
