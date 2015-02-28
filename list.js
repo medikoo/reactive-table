@@ -20,10 +20,13 @@ var List = module.exports = function (set, compare) {
 };
 
 var update = function () {
-	var list = this.set.toArray(this.compare);
+	var list = this.set.toArray(this.compare), from;
 	if (this.filter) list = list.filter(this.filter);
 	if (this.reverse) list = list.reverse();
-	if (isFinite(this.limit)) list = list.slice((this.page - 1) * this.limit, this.limit);
+	if (isFinite(this.limit)) {
+		from = (this.page - 1) * this.limit;
+		list = list.slice(from, from + this.limit);
+	}
 	if (list === this.result) return;
 	if (this.result) this.result.off('change', this.changeListener);
 	this.result = list;
