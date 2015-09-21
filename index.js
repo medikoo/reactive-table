@@ -20,10 +20,12 @@ var toArray          = require('es5-ext/array/to-array')
 var Table = module.exports = function (document, list, columns) {
 	this.document = validateDocument(document);
 	this.makeElement = makeElement.bind(document);
-	if (!(list instanceof List)) throw new TypeError(list + " is not an instance of list");
-	this.list = list;
+	if (list != null) {
+		if (!(list instanceof List)) throw new TypeError(list + " is not an instance of list");
+		this.list = list;
+		this.list.on('change', this.reload);
+	}
 	this.setup(columns);
-	this.list.on('change', this.reload);
 };
 
 var renderRow = function (item) {
@@ -71,8 +73,8 @@ Object.defineProperties(Table.prototype, assign({
 			el('td', { colspan: this.cellRenderers.length }, "No data"));
 	})
 }), autoBind({
-	reload: d(function () {
-		replaceContent.call(this.body, this.list.result.length
-			? map.call(this.list.result, this.renderRow) : this.emptyRow);
+	reload: d(function (list) {
+		if (!list) list = this.list.result;
+		replaceContent.call(this.body, list.length ? map.call(list, this.renderRow) : this.emptyRow);
 	})
 })));
